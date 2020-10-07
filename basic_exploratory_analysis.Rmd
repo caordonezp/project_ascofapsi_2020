@@ -1,0 +1,128 @@
+---
+title: "Basic exploratory analysis"
+author: |
+  | Camilo A. Ordóñez-Pinilla
+  | camilo.ordonez@gmail.com
+  
+
+date: "09/28/2020"
+
+output:
+
+  html_document:
+  
+    theme: journal
+    highlight: tango
+---
+### **Project 'Propuesta de comunicación pública basada en el análisis de la motivación para la adopción de las conductas de prevención en el contexto del COVID-19'**
+
+### Github Link
+
+RMarkdown code that generates this notebook is available to project members at  [github](https://github.com/caordonezp/project_ascofapsi_2020)
+
+## Preliminars
+
+As usual, we start setting up the working directory
+
+```{r}
+setwd ("E:/OTHER ACADEMICS/PROYECTOS COVID 19/PROYECTOS DATOS ASCOFAPSI/project_ascofapsi_2020")
+```
+
+Loading the required packages
+
+```{r}
+
+pacman::p_load(tidyverse, dplyr, summarytools, ggplot2, readxl, summarytools)
+```
+
+
+and uploading the data base in a new data frame called 'ascofapsi'
+
+```{r}
+ascofapsi <- read_excel("base de datos limpia.xlsx")
+```
+
+## Variables 
+
+Variables were divided in three sets (see file 'variables selection'): predictors (demographics, costs and utilities, motives), mediators (personality and autoeficacy) and dependent measures (covid prevention behaviors).
+
+## Descriptive summary
+
+```{r}
+print(dfSummary(ascofapsi, graph.magnif = 0.75), method = 'render')
+```
+
+* We have 926 observations of 118 variables.
+
+* Variables about change: worsening of physic activity, sleep, economy, job, but improvement in family relationships and free time activities.
+
+* Variables about covid prevention behaviors
+
+  * High hand-washing, not face touching, social distance, quarantine, and social coregulation. 
+  * Low in using gloves.
+  * High levels of beliefs in being capable of maintaining the recommended behaviors.
+  
+* Variables about motives
+  * More agreement in self and social welfare. (utilitarian)
+  * More symmetry in social and legal motives.
+  
+* Variables about utility
+  * People belief that prevention behaviors are useful but using gloves (the one that people are not performing)
+  
+* People recognize that coregulation is useful but it has low implementation
+
+* Sample
+  * Professional
+  * More women than men
+
+## Some graphs
+
+- As an example, we have more women (1) than men, and this is presented in how using mask is distributed by gender (differences by gender are not well represented since the unbalance)
+
+```{r}
+  qplot (r_usotapabocas, data=ascofapsi, fill = as.factor(genero))
+```
+```{r}
+ qplot (as.factor(motiv_evitarcontagio_yo), r_usotapabocas, data=ascofapsi, geom = "boxplot")
+```
+```{r}
+ qplot (as.factor(motiv_evitarcontagio_otro), r_usotapabocas, data=ascofapsi, geom = "boxplot")
+```
+
+```{r}
+qplot (as.factor(motiv_evitarconflicto), r_usotapabocas, data=ascofapsi, geom = "boxplot")
+```
+```{r}
+ qplot (as.factor(motiv_evitarlegales), r_usotapabocas, data=ascofapsi, geom = "boxplot")
+```
+```{r}
+qplot (as.factor(motiv_evitarlegales), as.factor(r_usotapabocas), data = ascofapsi, facets = .~genero)
+```
+```{r}
+ qplot (r_usotapabocas, data=ascofapsi, fill = as.factor(motiv_evitarlegales))
+```
+
+
+```{r}
+
+qplot (r_usotapabocas, data=ascofapsi, fill = as.factor(motiv_evitarlegales))
+
+``` 
+```{r}
+qplot (r_usotapabocas, data=ascofapsi, fill = as.factor(motiv_evitarconflicto))
+```
+```{r}
+cor.test(ascofapsi$r_usotapabocas, ascofapsi$r_lavadomanos)
+```
+```{r}
+ plot (ascofapsi$r_usotapabocas, ascofapsi$i_usotapabocas)
+```
+Create a data frame for the relation between intentions and actions
+```{r}
+intentions_actions <- (select (ascofapsi, i_usotapabocas:i_pedir_cprev, r_usotapabocas: r_pedir_cprev))
+```
+
+```{r}
+cor(intentions_actions                                                                                                                                                               )
+```
+
